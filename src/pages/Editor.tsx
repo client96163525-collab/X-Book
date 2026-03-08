@@ -5,7 +5,7 @@ import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { PDFDownloadLink, BlobProvider } from '@react-pdf/renderer';
 import { MyDocument } from '../components/PDFDocument';
-import { Save, Download, ArrowLeft, RefreshCw, Wand2, Plus, BookOpen, HelpCircle, Image as ImageIcon, CheckSquare, MessageSquare } from 'lucide-react';
+import { Save, Download, ArrowLeft, RefreshCw, Wand2, Plus, BookOpen, HelpCircle, Image as ImageIcon, CheckSquare, MessageSquare, Trash2 } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 import { Section, SectionType } from '../types';
 import StoryEditor from '../components/editor/StoryEditor';
@@ -23,6 +23,7 @@ export default function Editor() {
   const [title, setTitle] = useState('Untitled Book');
   const [subtitle, setSubtitle] = useState('');
   const [author, setAuthor] = useState('');
+  const [coverImage, setCoverImage] = useState('');
   const [template, setTemplate] = useState('classic');
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,10 +38,11 @@ export default function Editor() {
       title={title} 
       subtitle={subtitle} 
       author={author} 
+      coverImage={coverImage}
       sections={sections} 
       template={template} 
     />
-  ), [title, subtitle, author, sections, template]);
+  ), [title, subtitle, author, coverImage, sections, template]);
 
   useEffect(() => {
     if (user?.displayName) {
@@ -66,6 +68,7 @@ export default function Editor() {
           setTitle(data.title);
           setSubtitle(data.subtitle || '');
           setAuthor(data.author || '');
+          setCoverImage(data.coverImage || '');
           setTemplate(data.template || 'classic');
           
           if (data.sections) {
@@ -100,6 +103,7 @@ export default function Editor() {
         title,
         subtitle,
         author,
+        coverImage,
         template,
         sections,
         updatedAt: Timestamp.now(),
@@ -121,6 +125,47 @@ export default function Editor() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleCoverImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image is too large. Please choose an image under 2MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        const MAX_SIZE = 1200;
+        if (width > MAX_SIZE || height > MAX_SIZE) {
+          if (width > height) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        setCoverImage(dataUrl);
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
   };
 
   const addSection = (type: SectionType) => {
@@ -360,6 +405,37 @@ export default function Editor() {
                 <option value="minimal">Minimal</option>
                 <option value="modern">Modern</option>
              </select>
+             
+             <div className="md:col-span-3 flex items-center gap-4 border-t border-gray-100 pt-4 mt-2">
+                <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image / Logo</label>
+                    <div className="flex items-center gap-4">
+                        <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleCoverImageUpload}
+                            className="block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100"
+                        />
+                        {coverImage && (
+                            <div className="relative h-12 w-12 flex-shrink-0">
+                                <img src={coverImage} alt="Cover" className="h-12 w-12 object-cover rounded border border-gray-200" />
+                                <button 
+                                    onClick={() => setCoverImage('')}
+                                    className="absolute -top-1 -right-1 bg-red-100 text-red-600 rounded-full p-0.5 hover:bg-red-200"
+                                >
+                                    <Trash2 className="h-3 w-3" />
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Upload a logo or cover design (max 2MB)</p>
+                </div>
+             </div>
           </div>
 
           {/* AI Generator Input */}

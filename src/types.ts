@@ -49,6 +49,7 @@ export interface Book {
   title: string;
   subtitle?: string;
   author?: string;
+  coverImage?: string;
   template: 'classic' | 'children' | 'workbook' | 'minimal' | 'modern' | 'story-book';
   sections: Section[];
   createdAt: Timestamp;

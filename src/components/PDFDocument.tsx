@@ -148,6 +148,7 @@ interface PDFDocumentProps {
   title: string;
   subtitle?: string;
   author?: string;
+  coverImage?: string;
   sections: Section[];
   template?: string;
 }
@@ -197,7 +198,7 @@ const getThemeStyles = (template: string = 'classic') => {
   }
 };
 
-export const MyDocument = ({ title, subtitle, author, sections, template }: PDFDocumentProps) => {
+export const MyDocument = ({ title, subtitle, author, coverImage, sections, template }: PDFDocumentProps) => {
   const themeStyles = getThemeStyles(template);
   
   return (
@@ -205,6 +206,18 @@ export const MyDocument = ({ title, subtitle, author, sections, template }: PDFD
     {/* Cover Page */}
     <Page size="A4" style={[styles.page, themeStyles.page]}>
       <View style={styles.coverPage}>
+        {coverImage && (
+            <Image 
+                src={coverImage} 
+                style={{ 
+                    width: 200, 
+                    height: 200, 
+                    marginBottom: 30, 
+                    objectFit: 'contain', 
+                    alignSelf: 'center' 
+                }} 
+            />
+        )}
         <Text style={[styles.coverTitle, themeStyles.coverTitle]}>{title}</Text>
         {subtitle && <Text style={[styles.coverSubtitle, themeStyles.coverSubtitle]}>{subtitle}</Text>}
         <Text style={[styles.coverAuthor, themeStyles.coverAuthor]}>By {author || 'Unknown Author'}</Text>
