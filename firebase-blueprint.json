@@ -1,0 +1,60 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the application.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "role": { "type": "string", "enum": ["user", "admin"] }
+      },
+      "required": ["uid", "email", "createdAt", "role"]
+    },
+    "Book": {
+      "title": "Book",
+      "description": "A book created by a user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "author": { "type": "string" },
+        "template": { "type": "string", "enum": ["classic", "children", "workbook", "minimal", "modern"] },
+        "content": { "type": "string" },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string", "enum": ["story", "mcq", "true_false", "qa", "illustration"] },
+              "title": { "type": "string" },
+              "content": { "type": "string" },
+              "data": { "type": "object" },
+              "imageUrl": { "type": "string" },
+              "imagePrompt": { "type": "string" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles."
+    },
+    "books/{bookId}": {
+      "schema": "Book",
+      "description": "Books created by users."
+    }
+  }
+}
