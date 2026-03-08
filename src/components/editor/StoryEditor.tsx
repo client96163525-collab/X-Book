@@ -30,7 +30,7 @@ export default function StoryEditor({ section, onChange, onDelete }: SectionEdit
         value={section.content || ''}
         onChange={(e) => onChange({ ...section, content: e.target.value })}
         placeholder="Write your story here..."
-        className="w-full h-40 p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm"
+        className="w-full h-40 p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500 text-sm"
       />
     </div>
   );

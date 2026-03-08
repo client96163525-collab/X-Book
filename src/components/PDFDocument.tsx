@@ -4,19 +4,19 @@ import { Section, MCQData, TrueFalseData, QAData } from '../types';
 
 // Register fonts
 Font.register({
-  family: 'Roboto',
-  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
-});
-
-Font.register({
-  family: 'Roboto-Bold',
-  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-bold-webfont.ttf',
+  family: 'Noto Sans Devanagari',
+  fonts: [
+    { src: 'https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf', fontWeight: 'normal' },
+    { src: 'https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari-Bold.ttf', fontWeight: 'bold' },
+    { src: 'https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari-Medium.ttf', fontWeight: 'medium' },
+    { src: 'https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari-SemiBold.ttf', fontWeight: 'semibold' },
+  ]
 });
 
 const styles = StyleSheet.create({
   page: {
     padding: 50,
-    fontFamily: 'Roboto',
+    fontFamily: 'Noto Sans Devanagari',
     fontSize: 12,
     lineHeight: 1.5,
   },
@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
   },
   coverTitle: {
     fontSize: 36,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: 'Noto Sans Devanagari',
+    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -50,7 +51,8 @@ const styles = StyleSheet.create({
   },
   tocTitle: {
     fontSize: 24,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: 'Noto Sans Devanagari',
+    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -64,7 +66,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: 'Noto Sans Devanagari',
+    fontWeight: 'bold',
     marginBottom: 15,
     marginTop: 25,
   },
@@ -97,7 +100,8 @@ const styles = StyleSheet.create({
   },
   questionText: {
     fontSize: 12,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: 'Noto Sans Devanagari',
+    fontWeight: 'bold',
     marginBottom: 5,
   },
   optionText: {
@@ -131,35 +135,35 @@ const getThemeStyles = (template: string = 'classic') => {
   switch (template) {
     case 'modern':
       return StyleSheet.create({
-        page: { padding: 50, fontFamily: 'Roboto', fontSize: 12, lineHeight: 1.6, color: '#333' },
-        coverTitle: { fontSize: 48, fontFamily: 'Roboto-Bold', marginBottom: 10, textAlign: 'left', color: '#2563eb' },
+        page: { padding: 50, fontFamily: 'Noto Sans Devanagari', fontSize: 12, lineHeight: 1.6, color: '#333' },
+        coverTitle: { fontSize: 48, fontFamily: 'Noto Sans Devanagari', fontWeight: 'bold', marginBottom: 10, textAlign: 'left', color: '#2563eb' },
         coverSubtitle: { fontSize: 24, marginBottom: 40, textAlign: 'left', color: '#64748b' },
         coverAuthor: { fontSize: 16, marginTop: 100, textAlign: 'left', color: '#333' },
-        sectionTitle: { fontSize: 24, fontFamily: 'Roboto-Bold', marginBottom: 20, marginTop: 30, color: '#2563eb' },
+        sectionTitle: { fontSize: 24, fontFamily: 'Noto Sans Devanagari', fontWeight: 'bold', marginBottom: 20, marginTop: 30, color: '#2563eb' },
       });
     case 'minimal':
       return StyleSheet.create({
-        page: { padding: 60, fontFamily: 'Roboto', fontSize: 11, lineHeight: 1.8, color: '#000' },
-        coverTitle: { fontSize: 32, fontFamily: 'Roboto', marginBottom: 30, textAlign: 'center', letterSpacing: 2, textTransform: 'uppercase' },
+        page: { padding: 60, fontFamily: 'Noto Sans Devanagari', fontSize: 11, lineHeight: 1.8, color: '#000' },
+        coverTitle: { fontSize: 32, fontFamily: 'Noto Sans Devanagari', marginBottom: 30, textAlign: 'center', letterSpacing: 2, textTransform: 'uppercase' },
         coverSubtitle: { fontSize: 14, marginBottom: 40, textAlign: 'center', color: '#666', letterSpacing: 1 },
         coverAuthor: { fontSize: 12, marginTop: 100, textAlign: 'center', textTransform: 'uppercase' },
-        sectionTitle: { fontSize: 18, fontFamily: 'Roboto', marginBottom: 20, marginTop: 40, textAlign: 'center', textTransform: 'uppercase', letterSpacing: 2 },
+        sectionTitle: { fontSize: 18, fontFamily: 'Noto Sans Devanagari', marginBottom: 20, marginTop: 40, textAlign: 'center', textTransform: 'uppercase', letterSpacing: 2 },
       });
     case 'children':
       return StyleSheet.create({
-        page: { padding: 40, fontFamily: 'Roboto', fontSize: 14, lineHeight: 1.6, color: '#222' },
-        coverTitle: { fontSize: 42, fontFamily: 'Roboto-Bold', marginBottom: 20, textAlign: 'center', color: '#e11d48' },
+        page: { padding: 40, fontFamily: 'Noto Sans Devanagari', fontSize: 14, lineHeight: 1.6, color: '#222' },
+        coverTitle: { fontSize: 42, fontFamily: 'Noto Sans Devanagari', fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: '#e11d48' },
         coverSubtitle: { fontSize: 20, marginBottom: 40, textAlign: 'center', color: '#be123c' },
         coverAuthor: { fontSize: 16, marginTop: 80, textAlign: 'center', color: '#444' },
-        sectionTitle: { fontSize: 28, fontFamily: 'Roboto-Bold', marginBottom: 20, marginTop: 20, textAlign: 'center', color: '#e11d48' },
+        sectionTitle: { fontSize: 28, fontFamily: 'Noto Sans Devanagari', fontWeight: 'bold', marginBottom: 20, marginTop: 20, textAlign: 'center', color: '#e11d48' },
       });
     default: // classic
       return StyleSheet.create({
-        page: { padding: 50, fontFamily: 'Roboto', fontSize: 12, lineHeight: 1.5 },
-        coverTitle: { fontSize: 36, fontFamily: 'Roboto-Bold', marginBottom: 20, textAlign: 'center' },
+        page: { padding: 50, fontFamily: 'Noto Sans Devanagari', fontSize: 12, lineHeight: 1.5 },
+        coverTitle: { fontSize: 36, fontFamily: 'Noto Sans Devanagari', fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
         coverSubtitle: { fontSize: 18, marginBottom: 40, textAlign: 'center', color: '#666' },
         coverAuthor: { fontSize: 14, marginTop: 100, textAlign: 'center' },
-        sectionTitle: { fontSize: 24, fontFamily: 'Roboto-Bold', marginBottom: 20, marginTop: 20 },
+        sectionTitle: { fontSize: 24, fontFamily: 'Noto Sans Devanagari', fontWeight: 'bold', marginBottom: 20, marginTop: 20 },
       });
   }
 };
