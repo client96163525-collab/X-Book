@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
-import { Section, MCQData, TrueFalseData, QAData } from '../types';
+import { Section, MCQData, TrueFalseData, QAData, FIBData } from '../types';
 
 // Register fonts
 Font.register({
@@ -297,6 +297,17 @@ export const MyDocument = ({ title, subtitle, author, sections, template }: PDFD
             <View style={styles.quizContainer} wrap={false}>
                <Text style={styles.questionText}>Q: {(section.data as QAData).question}</Text>
                <Text style={styles.answerText}>A: {(section.data as QAData).answer}</Text>
+            </View>
+          )}
+
+          {section.type === 'fib' && section.data && (
+            <View style={styles.quizContainer} wrap={false}>
+               <Text style={styles.questionText}>Fill in the blank:</Text>
+               <Text style={styles.paragraph}>{(section.data as FIBData).question}</Text>
+               <Text style={styles.answerText}>Answer: {(section.data as FIBData).answer}</Text>
+               {(section.data as FIBData).explanation && (
+                   <Text style={styles.explanationText}>Explanation: {(section.data as FIBData).explanation}</Text>
+               )}
             </View>
           )}
 

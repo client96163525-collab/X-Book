@@ -1,6 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 
-export type SectionType = 'story' | 'mcq' | 'true_false' | 'qa' | 'illustration';
+export type SectionType = 'story' | 'mcq' | 'true_false' | 'qa' | 'illustration' | 'fib';
 
 export interface MCQOption {
   id: string;
@@ -25,12 +25,18 @@ export interface QAData {
   answer: string;
 }
 
+export interface FIBData {
+  question: string; // The sentence with blanks
+  answer: string;   // The correct word(s) to fill in
+  explanation?: string;
+}
+
 export interface Section {
   id: string;
   type: SectionType;
   title?: string;
   content?: string; // For story text
-  data?: MCQData | TrueFalseData | QAData | any;
+  data?: MCQData | TrueFalseData | QAData | FIBData | any;
   imageUrl?: string;
   imagePrompt?: string;
   layout?: 'text-only' | 'image-top' | 'image-bottom' | 'image-left' | 'image-right' | 'background';

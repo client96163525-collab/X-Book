@@ -12,6 +12,7 @@ import StoryEditor from '../components/editor/StoryEditor';
 import MCQEditor from '../components/editor/MCQEditor';
 import TrueFalseEditor from '../components/editor/TrueFalseEditor';
 import QAEditor from '../components/editor/QAEditor';
+import FIBEditor from '../components/editor/FIBEditor';
 import IllustrationEditor from '../components/editor/IllustrationEditor';
 
 export default function Editor() {
@@ -119,7 +120,8 @@ export default function Editor() {
       content: '',
       data: type === 'mcq' ? { question: '', options: [], explanation: '' } : 
             type === 'true_false' ? { statement: '', isTrue: true, explanation: '' } :
-            type === 'qa' ? { question: '', answer: '' } : undefined
+            type === 'qa' ? { question: '', answer: '' } :
+            type === 'fib' ? { question: '', answer: '', explanation: '' } : undefined
     };
     setSections([...sections, newSection]);
   };
@@ -148,12 +150,13 @@ export default function Editor() {
         
         const prompt = `
         Analyze the following raw content and structure it into a book format.
-        Identify stories, questions, true/false, and MCQs.
+        Identify stories, questions, true/false, MCQs, and Fill in the Blanks.
         For story sections, analyze the content to suggest a suitable layout, font style, and generate a detailed image prompt for an illustration.
         
         IMPORTANT: 
         1. Return ONLY a valid JSON array. Do not include markdown formatting or code blocks.
         2. For 'font', prefer 'default' to let the book template control the style, unless a specific style (handwriting/mono) is strictly needed for effect.
+        3. GENERATE AT LEAST 5 MCQs, 5 True/False questions, 5 Q&A questions, and 5 Fill in the Blanks questions based on the content.
         
         Schema:
         [
@@ -168,6 +171,7 @@ export default function Editor() {
           { "type": "mcq", "data": { "question": "...", "options": [{"id": "1", "text": "...", "isCorrect": boolean}], "explanation": "..." } },
           { "type": "true_false", "data": { "statement": "...", "isTrue": boolean, "explanation": "..." } },
           { "type": "qa", "data": { "question": "...", "answer": "..." } },
+          { "type": "fib", "data": { "question": "Sentence with _____ blank", "answer": "correct word", "explanation": "..." } },
           { "type": "illustration", "imagePrompt": "Detailed prompt for an illustration of..." }
         ]
 
@@ -404,6 +408,13 @@ export default function Editor() {
                             onDelete={() => deleteSection(index)} 
                         />
                     )}
+                    {section.type === 'fib' && (
+                        <FIBEditor 
+                            section={section} 
+                            onChange={(s) => updateSection(index, s)} 
+                            onDelete={() => deleteSection(index)} 
+                        />
+                    )}
                     {section.type === 'illustration' && (
                         <IllustrationEditor 
                             section={section} 
@@ -430,6 +441,9 @@ export default function Editor() {
                 </button>
                 <button onClick={() => addSection('qa')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                     <HelpCircle className="h-4 w-4 mr-2 text-red-500" /> Add Q&A
+                </button>
+                <button onClick={() => addSection('fib')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                    <HelpCircle className="h-4 w-4 mr-2 text-yellow-500" /> Add FIB
                 </button>
             </div>
           </div>
