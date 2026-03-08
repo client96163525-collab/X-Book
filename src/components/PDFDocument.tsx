@@ -233,9 +233,8 @@ export const MyDocument = ({ title, subtitle, author, sections, template }: PDFD
              fontFamily = section.font === 'serif' ? 'Noto Serif Devanagari' :
                            section.font === 'handwriting' ? 'Kalam' :
                            section.font === 'cursive' ? 'Kalam' :
-                           section.font === 'mono' ? 'Teko' : // Using Teko for mono/display-like or fallback to Courier if needed, but let's stick to registered fonts
+                           section.font === 'mono' ? 'Teko' : // Using Teko for mono/display-like as standard Courier doesn't support Devanagari
                            'Noto Sans Devanagari';
-             if (section.font === 'mono') fontFamily = 'Courier'; // Standard Courier for mono
         }
         
         const contentStyle = [styles.paragraph, fontFamily ? { fontFamily } : {}];
