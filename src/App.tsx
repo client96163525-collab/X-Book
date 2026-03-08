@@ -3,6 +3,8 @@ import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Editor from './pages/Editor';
+import Login from './pages/Login';
+import CreateBook from './pages/CreateBook';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -20,11 +22,20 @@ function AppContent() {
         <Navbar />
         <Routes>
           <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Landing />} />
+          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create"
+            element={
+              <ProtectedRoute>
+                <CreateBook />
               </ProtectedRoute>
             }
           />
@@ -40,7 +51,7 @@ function AppContent() {
             path="/new"
             element={
               <ProtectedRoute>
-                <Navigate to="/editor/new" replace />
+                <Navigate to="/create" replace />
               </ProtectedRoute>
             }
           />
