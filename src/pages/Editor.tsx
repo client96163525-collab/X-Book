@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc, Timestamp, collection } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -30,6 +30,17 @@ export default function Editor() {
   const [generating, setGenerating] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [rawInput, setRawInput] = useState(''); // For initial raw input mode
+
+  // Memoize the document to prevent infinite re-renders in BlobProvider
+  const pdfDocument = useMemo(() => (
+    <MyDocument 
+      title={title} 
+      subtitle={subtitle} 
+      author={author} 
+      sections={sections} 
+      template={template} 
+    />
+  ), [title, subtitle, author, sections, template]);
 
   useEffect(() => {
     if (user?.displayName) {
@@ -306,7 +317,7 @@ export default function Editor() {
             Save
           </button>
           <PDFDownloadLink
-            document={<MyDocument title={title} subtitle={subtitle} author={author} sections={sections} template={template} />}
+            document={pdfDocument}
             fileName={`${title.replace(/\s+/g, '_')}.pdf`}
             className="flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
           >
@@ -450,8 +461,11 @@ export default function Editor() {
         </div>
 
         {/* Preview Pane */}
-        <div className={`flex-1 bg-gray-100 border-l border-gray-200 ${showPreview ? 'block' : 'hidden'}`}>
-          <BlobProvider document={<MyDocument title={title} subtitle={subtitle} author={author} sections={sections} template={template} />}>
+        <div className={`flex-1 bg-gray-100 border-l border-gray-200 h-full ${showPreview ? 'flex flex-col' : 'hidden'}`}>
+          <BlobProvider 
+            key={sections.length + template + title} // Force re-mount on major changes
+            document={pdfDocument}
+          >
             {({ url, loading, error }) => {
               if (loading) {
                 return (
