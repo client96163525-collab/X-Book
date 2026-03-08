@@ -15,6 +15,7 @@ import QAEditor from '../components/editor/QAEditor';
 import FIBEditor from '../components/editor/FIBEditor';
 import IllustrationEditor from '../components/editor/IllustrationEditor';
 import CharacterSketchEditor from '../components/editor/CharacterSketchEditor';
+import SceneEditor from '../components/editor/SceneEditor';
 
 export default function Editor() {
   const { id } = useParams();
@@ -179,7 +180,8 @@ export default function Editor() {
             type === 'true_false' ? { statement: '', isTrue: true, explanation: '' } :
             type === 'qa' ? { question: '', answer: '' } :
             type === 'fib' ? { question: '', answer: '', explanation: '' } : 
-            type === 'character_sketch' ? { role: '', traits: [] } : undefined
+            type === 'character_sketch' ? { role: '', traits: [] } :
+            type === 'scene' ? { description: '', layout: 'half-page' } : undefined
     };
     setSections([...sections, newSection]);
   };
@@ -519,6 +521,13 @@ export default function Editor() {
                             onDelete={() => deleteSection(index)} 
                         />
                     )}
+                    {section.type === 'scene' && (
+                        <SceneEditor 
+                            section={section} 
+                            onChange={(s) => updateSection(index, s)} 
+                            onDelete={() => deleteSection(index)} 
+                        />
+                    )}
                 </div>
             ))}
 
@@ -529,6 +538,9 @@ export default function Editor() {
                 </button>
                 <button onClick={() => addSection('character_sketch')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                     <User className="h-4 w-4 mr-2 text-indigo-500" /> Add Character
+                </button>
+                <button onClick={() => addSection('scene')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                    <ImageIcon className="h-4 w-4 mr-2 text-pink-500" /> Add Scene
                 </button>
                 <button onClick={() => addSection('illustration')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                     <ImageIcon className="h-4 w-4 mr-2 text-purple-500" /> Add Illustration

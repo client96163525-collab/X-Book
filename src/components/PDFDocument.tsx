@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
-import { Section, MCQData, TrueFalseData, QAData, FIBData, CharacterSketchData } from '../types';
+import { Section, MCQData, TrueFalseData, QAData, FIBData, CharacterSketchData, SceneData } from '../types';
 
 // Register fonts
 Font.register({
@@ -344,6 +344,35 @@ export const MyDocument = ({ title, subtitle, author, coverImage, sections, temp
                </View>
                {section.content && (
                    <Text style={contentStyle}>{section.content}</Text>
+               )}
+            </View>
+          )}
+
+          {section.type === 'scene' && section.data && (
+            <View wrap={false} style={{ marginBottom: 20, alignItems: 'center' }}>
+               {section.imageUrl && (
+                   <Image 
+                       src={section.imageUrl} 
+                       style={{ 
+                           width: (section.data as SceneData).layout === 'full-page' ? '100%' : '80%',
+                           height: (section.data as SceneData).layout === 'full-page' ? 500 : 300,
+                           objectFit: 'contain',
+                           marginBottom: 10,
+                           borderRadius: 5
+                       }} 
+                   />
+               )}
+               {(section.data as SceneData).description && (
+                   <Text style={{ 
+                       fontSize: 12, 
+                       fontStyle: 'italic', 
+                       color: '#555', 
+                       textAlign: 'center',
+                       marginTop: 5,
+                       paddingHorizontal: 20
+                   }}>
+                       {(section.data as SceneData).description}
+                   </Text>
                )}
             </View>
           )}
