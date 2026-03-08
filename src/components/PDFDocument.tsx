@@ -6,29 +6,30 @@ import { Section, MCQData, TrueFalseData, QAData } from '../types';
 Font.register({
   family: 'Noto Sans Devanagari',
   fonts: [
-    { src: 'https://fonts.gstatic.com/s/notosansdevanagari/v25/5aUu9_a5lQYkg72ryC0X7U1xS4XzK_w.ttf', fontWeight: 'normal' }, // Regular
-    { src: 'https://fonts.gstatic.com/s/notosansdevanagari/v25/5aUu9_a5lQYkg72ryC0X7U1xS4XzK_w.ttf', fontWeight: 'bold' }, // Bold (using regular for now as placeholder if bold link fails, but ideally use bold link)
+    { src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf', fontWeight: 'normal' },
+    { src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notosansdevanagari/NotoSansDevanagari-Bold.ttf', fontWeight: 'bold' },
   ]
 });
 
 Font.register({
   family: 'Noto Serif Devanagari',
   fonts: [
-    { src: 'https://fonts.gstatic.com/s/notoserifdevanagari/v18/3JmN1I0yKj8oQ_sW2k70-F62vj9_5tK.ttf', fontWeight: 'normal' },
+    { src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notoserifdevanagari/NotoSerifDevanagari-Regular.ttf', fontWeight: 'normal' },
+    { src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notoserifdevanagari/NotoSerifDevanagari-Bold.ttf', fontWeight: 'bold' },
   ]
 });
 
 Font.register({
   family: 'Kalam',
   fonts: [
-    { src: 'https://fonts.gstatic.com/s/kalam/v16/YA9dr0Wd4kDdMthROCc.ttf', fontWeight: 'normal' },
+    { src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/kalam/Kalam-Regular.ttf', fontWeight: 'normal' },
   ]
 });
 
 Font.register({
   family: 'Teko',
   fonts: [
-    { src: 'https://fonts.gstatic.com/s/teko/v20/LYj4dG7kmE0gX1Y.ttf', fontWeight: 'normal' },
+    { src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/teko/Teko-Regular.ttf', fontWeight: 'normal' },
   ]
 });
 

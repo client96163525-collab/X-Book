@@ -19,8 +19,7 @@ export default function Dashboard() {
       try {
         const q = query(
           collection(db, 'books'),
-          where('userId', '==', user.uid),
-          orderBy('createdAt', 'desc')
+          where('userId', '==', user.uid)
         );
         
         const querySnapshot = await getDocs(q);
@@ -28,6 +27,13 @@ export default function Dashboard() {
           id: doc.id,
           ...doc.data()
         })) as Book[];
+        
+        // Sort client-side to avoid Firestore index requirement
+        booksData.sort((a, b) => {
+            const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+            const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+            return dateB.getTime() - dateA.getTime();
+        });
         
         setBooks(booksData);
       } catch (error) {
