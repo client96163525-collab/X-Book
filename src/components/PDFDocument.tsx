@@ -271,13 +271,13 @@ export const MyDocument = ({ title, subtitle, author, sections, template }: PDFD
 
           {section.type === 'mcq' && section.data && (
             <View style={styles.quizContainer} wrap={false}>
-               <Text style={styles.questionText}>Q: {(section.data as MCQData).question}</Text>
-               {(section.data as MCQData).options.map((opt, i) => (
+               <Text style={styles.questionText}>Q: {(section.data as MCQData)?.question || ''}</Text>
+               {(section.data as MCQData)?.options?.map((opt, i) => (
                    <Text key={i} style={styles.optionText}>
-                       {String.fromCharCode(65 + i)}. {opt.text} {opt.isCorrect ? '(Correct)' : ''}
+                       {String.fromCharCode(65 + i)}. {opt?.text || ''} {opt?.isCorrect ? '(Correct)' : ''}
                    </Text>
                ))}
-               {(section.data as MCQData).explanation && (
+               {(section.data as MCQData)?.explanation && (
                    <Text style={styles.explanationText}>Explanation: {(section.data as MCQData).explanation}</Text>
                )}
             </View>
@@ -285,9 +285,9 @@ export const MyDocument = ({ title, subtitle, author, sections, template }: PDFD
 
           {section.type === 'true_false' && section.data && (
             <View style={styles.quizContainer} wrap={false}>
-               <Text style={styles.questionText}>Statement: {(section.data as TrueFalseData).statement}</Text>
-               <Text style={styles.optionText}>Answer: {(section.data as TrueFalseData).isTrue ? 'True' : 'False'}</Text>
-               {(section.data as TrueFalseData).explanation && (
+               <Text style={styles.questionText}>Statement: {(section.data as TrueFalseData)?.statement || ''}</Text>
+               <Text style={styles.optionText}>Answer: {(section.data as TrueFalseData)?.isTrue ? 'True' : 'False'}</Text>
+               {(section.data as TrueFalseData)?.explanation && (
                    <Text style={styles.explanationText}>Explanation: {(section.data as TrueFalseData).explanation}</Text>
                )}
             </View>
@@ -295,17 +295,17 @@ export const MyDocument = ({ title, subtitle, author, sections, template }: PDFD
 
           {section.type === 'qa' && section.data && (
             <View style={styles.quizContainer} wrap={false}>
-               <Text style={styles.questionText}>Q: {(section.data as QAData).question}</Text>
-               <Text style={styles.answerText}>A: {(section.data as QAData).answer}</Text>
+               <Text style={styles.questionText}>Q: {(section.data as QAData)?.question || ''}</Text>
+               <Text style={styles.answerText}>A: {(section.data as QAData)?.answer || ''}</Text>
             </View>
           )}
 
           {section.type === 'fib' && section.data && (
             <View style={styles.quizContainer} wrap={false}>
                <Text style={styles.questionText}>Fill in the blank:</Text>
-               <Text style={styles.paragraph}>{(section.data as FIBData).question}</Text>
-               <Text style={styles.answerText}>Answer: {(section.data as FIBData).answer}</Text>
-               {(section.data as FIBData).explanation && (
+               <Text style={styles.paragraph}>{(section.data as FIBData)?.question || ''}</Text>
+               <Text style={styles.answerText}>Answer: {(section.data as FIBData)?.answer || ''}</Text>
+               {(section.data as FIBData)?.explanation && (
                    <Text style={styles.explanationText}>Explanation: {(section.data as FIBData).explanation}</Text>
                )}
             </View>

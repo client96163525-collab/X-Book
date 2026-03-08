@@ -450,7 +450,7 @@ export default function Editor() {
         </div>
 
         {/* Preview Pane */}
-        <div className={`flex-1 bg-gray-100 border-l border-gray-200 ${showPreview ? 'block' : 'hidden md:block'}`}>
+        <div className={`flex-1 bg-gray-100 border-l border-gray-200 ${showPreview ? 'block' : 'hidden'}`}>
           <PDFViewer width="100%" height="100%" className="w-full h-full">
             <MyDocument title={title} subtitle={subtitle} author={author} sections={sections} template={template} />
           </PDFViewer>
