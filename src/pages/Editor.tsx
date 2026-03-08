@@ -141,13 +141,19 @@ export default function Editor() {
     setGenerating(true);
 
     try {
+        if (!process.env.GEMINI_API_KEY) {
+            throw new Error("Gemini API Key is missing");
+        }
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
         
         const prompt = `
         Analyze the following raw content and structure it into a book format.
         Identify stories, questions, true/false, and MCQs.
         For story sections, analyze the content to suggest a suitable layout, font style, and generate a detailed image prompt for an illustration.
-        Return a JSON array of sections.
+        
+        IMPORTANT: 
+        1. Return ONLY a valid JSON array. Do not include markdown formatting or code blocks.
+        2. For 'font', prefer 'default' to let the book template control the style, unless a specific style (handwriting/mono) is strictly needed for effect.
         
         Schema:
         [
@@ -156,7 +162,7 @@ export default function Editor() {
             "title": "...", 
             "content": "...",
             "layout": "image-top" | "image-bottom" | "text-only",
-            "font": "serif" | "sans" | "handwriting" | "mono",
+            "font": "default" | "serif" | "sans" | "handwriting" | "mono",
             "imagePrompt": "Detailed prompt for an illustration of this scene (if layout involves image)"
           },
           { "type": "mcq", "data": { "question": "...", "options": [{"id": "1", "text": "...", "isCorrect": boolean}], "explanation": "..." } },
@@ -177,21 +183,30 @@ export default function Editor() {
             }
         });
         
-        const text = response.text;
+        let text = response.text;
         
         if (text) {
-            const generatedSections = JSON.parse(text);
-            // Add IDs
-            const sectionsWithIds = generatedSections.map((s: any) => ({
-                ...s,
-                id: Math.random().toString(36).substr(2, 9)
-            }));
-            setSections([...sections, ...sectionsWithIds]);
-            setRawInput(''); // Clear raw input after successful generation
+            // Clean markdown if present
+            text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            
+            try {
+                const generatedSections = JSON.parse(text);
+                // Add IDs
+                const sectionsWithIds = generatedSections.map((s: any) => ({
+                    ...s,
+                    id: Math.random().toString(36).substr(2, 9)
+                }));
+                setSections([...sections, ...sectionsWithIds]);
+                setRawInput(''); // Clear raw input after successful generation
+            } catch (parseError) {
+                console.error("JSON Parse Error:", parseError);
+                console.log("Raw Response:", text);
+                alert("AI returned invalid format. Please try again.");
+            }
         }
     } catch (error) {
         console.error("Error generating structure:", error);
-        alert("Failed to generate structure. Please try again.");
+        alert(`Failed to generate structure: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
         setGenerating(false);
     }
@@ -199,10 +214,13 @@ export default function Editor() {
 
   const handleGenerateAllImages = async () => {
     setGenerating(true);
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const newSections = [...sections];
-    
     try {
+        if (!process.env.GEMINI_API_KEY) {
+            throw new Error("Gemini API Key is missing");
+        }
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const newSections = [...sections];
+        
         for (let i = 0; i < newSections.length; i++) {
             const section = newSections[i];
             if ((section.type === 'story' || section.type === 'illustration') && section.imagePrompt && !section.imageUrl) {
@@ -228,9 +246,13 @@ export default function Editor() {
                     }
                 } catch (e) {
                     console.error(`Error generating image for section ${i}:`, e);
+                    // Continue to next image even if one fails
                 }
             }
         }
+    } catch (error) {
+        console.error("Error in image generation process:", error);
+        alert(`Failed to start image generation: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
         setGenerating(false);
     }
