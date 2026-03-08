@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../hooks/useAuth';
-import { Plus, Book as BookIcon, Calendar } from 'lucide-react';
+import { Plus, Book as BookIcon, Calendar, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Book } from '../types';
 
@@ -45,6 +45,21 @@ export default function Dashboard() {
 
     fetchBooks();
   }, [user]);
+
+  const handleDelete = async (e: React.MouseEvent, bookId: string) => {
+    e.preventDefault(); // Prevent navigation
+    e.stopPropagation(); // Stop event bubbling
+    
+    if (window.confirm('Are you sure you want to delete this book? This action cannot be undone.')) {
+      try {
+        await deleteDoc(doc(db, 'books', bookId));
+        setBooks(books.filter(book => book.id !== bookId));
+      } catch (error) {
+        console.error("Error deleting book:", error);
+        alert("Failed to delete book. Please try again.");
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -98,9 +113,18 @@ export default function Dashboard() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 truncate">{book.title}</h3>
                 <p className="text-sm text-gray-500 truncate">{book.author || 'Unknown Author'}</p>
-                <div className="mt-4 flex items-center text-xs text-gray-400">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  {book.createdAt?.toDate().toLocaleDateString()}
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center text-xs text-gray-400">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    {book.createdAt?.toDate().toLocaleDateString()}
+                  </div>
+                  <button
+                    onClick={(e) => handleDelete(e, book.id)}
+                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                    title="Delete Book"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </Link>
             </motion.div>

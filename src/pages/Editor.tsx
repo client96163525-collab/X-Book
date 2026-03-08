@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc, Timestamp, collection } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink, BlobProvider } from '@react-pdf/renderer';
 import { MyDocument } from '../components/PDFDocument';
 import { Save, Download, ArrowLeft, RefreshCw, Wand2, Plus, BookOpen, HelpCircle, Image as ImageIcon, CheckSquare, MessageSquare } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
@@ -451,9 +451,35 @@ export default function Editor() {
 
         {/* Preview Pane */}
         <div className={`flex-1 bg-gray-100 border-l border-gray-200 ${showPreview ? 'block' : 'hidden'}`}>
-          <PDFViewer width="100%" height="100%" className="w-full h-full">
-            <MyDocument title={title} subtitle={subtitle} author={author} sections={sections} template={template} />
-          </PDFViewer>
+          <BlobProvider document={<MyDocument title={title} subtitle={subtitle} author={author} sections={sections} template={template} />}>
+            {({ url, loading, error }) => {
+              if (loading) {
+                return (
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+                    <span className="text-gray-600">Generating Preview...</span>
+                  </div>
+                );
+              }
+              if (error) {
+                return (
+                  <div className="flex flex-col items-center justify-center h-full text-red-600 p-8 text-center">
+                    <p className="font-bold mb-2">Failed to load preview</p>
+                    <p className="text-sm">{error.message}</p>
+                  </div>
+                );
+              }
+              return (
+                <iframe 
+                  src={url || ''} 
+                  width="100%" 
+                  height="100%" 
+                  className="w-full h-full border-none"
+                  title="PDF Preview"
+                />
+              );
+            }}
+          </BlobProvider>
         </div>
       </div>
     </div>
