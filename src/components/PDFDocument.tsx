@@ -6,30 +6,30 @@ import { Section, MCQData, TrueFalseData, QAData, FIBData } from '../types';
 Font.register({
   family: 'Noto Sans Devanagari',
   fonts: [
-    { src: 'https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf', fontWeight: 'normal' },
-    { src: 'https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari-Bold.ttf', fontWeight: 'bold' },
+    { src: 'https://fonts.gstatic.com/s/notosansdevanagari/v30/TuGoUUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHn6B2OHjbL_08AlXQly-A.ttf', fontWeight: 'normal' },
+    { src: 'https://fonts.gstatic.com/s/notosansdevanagari/v30/TuGoUUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHn6B2OHjbL_08AlZMiy-A.ttf', fontWeight: 'bold' },
   ]
 });
 
 Font.register({
   family: 'Noto Serif Devanagari',
   fonts: [
-    { src: 'https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifdevanagari/NotoSerifDevanagari-Regular.ttf', fontWeight: 'normal' },
-    { src: 'https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifdevanagari/NotoSerifDevanagari-Bold.ttf', fontWeight: 'bold' },
+    { src: 'https://fonts.gstatic.com/s/notoserifdevanagari/v34/x3dYcl3IZKmUqiMk48ZHXJ5jwU-DZGRSaQ4Hh2dGyFzPLcQPVbnRNeFsw0xRWb6uxTA-ow-H.ttf', fontWeight: 'normal' },
+    { src: 'https://fonts.gstatic.com/s/notoserifdevanagari/v34/x3dYcl3IZKmUqiMk48ZHXJ5jwU-DZGRSaQ4Hh2dGyFzPLcQPVbnRNeFsw0xRWb6uxTDZpA-H.ttf', fontWeight: 'bold' },
   ]
 });
 
 Font.register({
   family: 'Kalam',
   fonts: [
-    { src: 'https://raw.githubusercontent.com/google/fonts/main/ofl/kalam/Kalam-Regular.ttf', fontWeight: 'normal' },
+    { src: 'https://fonts.gstatic.com/s/kalam/v18/YA9dr0Wd4kDdMuhW.ttf', fontWeight: 'normal' },
   ]
 });
 
 Font.register({
   family: 'Teko',
   fonts: [
-    { src: 'https://raw.githubusercontent.com/google/fonts/main/ofl/teko/Teko-Regular.ttf', fontWeight: 'normal' },
+    { src: 'https://fonts.gstatic.com/s/teko/v23/LYjYdG7kmE0gV69VVPPdFl06VN8XG7Sy.ttf', fontWeight: 'normal' },
   ]
 });
 

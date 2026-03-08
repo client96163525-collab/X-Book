@@ -11,6 +11,10 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource/kalam": "^5.2.8",
+    "@fontsource/noto-sans-devanagari": "^5.2.8",
+    "@fontsource/noto-serif-devanagari": "^5.2.10",
+    "@fontsource/teko": "^5.2.7",
     "@google/genai": "^1.29.0",
     "@react-pdf/renderer": "^4.3.2",
     "@tailwindcss/vite": "^4.1.14",
