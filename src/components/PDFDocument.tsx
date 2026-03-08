@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
-import { Section, MCQData, TrueFalseData, QAData, FIBData } from '../types';
+import { Section, MCQData, TrueFalseData, QAData, FIBData, CharacterSketchData } from '../types';
 
 // Register fonts
 Font.register({
@@ -319,6 +319,31 @@ export const MyDocument = ({ title, subtitle, author, coverImage, sections, temp
                <Text style={styles.answerText}>Answer: {(section.data as FIBData)?.answer || ''}</Text>
                {(section.data as FIBData)?.explanation && (
                    <Text style={styles.explanationText}>Explanation: {(section.data as FIBData).explanation}</Text>
+               )}
+            </View>
+          )}
+
+          {section.type === 'character_sketch' && section.data && (
+            <View wrap={false} style={{ marginBottom: 20 }}>
+               {section.imageUrl && (
+                   <Image 
+                       src={section.imageUrl} 
+                       style={{ 
+                           width: 150, 
+                           height: 150, 
+                           borderRadius: 75, 
+                           alignSelf: 'center',
+                           marginBottom: 10,
+                           objectFit: 'cover'
+                       }} 
+                   />
+               )}
+               <View style={[styles.quizContainer, { backgroundColor: '#f0f9ff', borderColor: '#bae6fd', borderWidth: 1 }]}>
+                   <Text style={[styles.questionText, { color: '#0369a1' }]}>Role: {(section.data as CharacterSketchData)?.role || 'N/A'}</Text>
+                   <Text style={styles.optionText}>Traits: {(section.data as CharacterSketchData)?.traits?.join(', ') || 'N/A'}</Text>
+               </View>
+               {section.content && (
+                   <Text style={contentStyle}>{section.content}</Text>
                )}
             </View>
           )}

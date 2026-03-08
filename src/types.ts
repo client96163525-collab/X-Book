@@ -1,6 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 
-export type SectionType = 'story' | 'mcq' | 'true_false' | 'qa' | 'illustration' | 'fib';
+export type SectionType = 'story' | 'mcq' | 'true_false' | 'qa' | 'illustration' | 'fib' | 'character_sketch';
 
 export interface MCQOption {
   id: string;
@@ -31,12 +31,18 @@ export interface FIBData {
   explanation?: string;
 }
 
+export interface CharacterSketchData {
+  role: string;
+  traits: string[];
+  backstory?: string;
+}
+
 export interface Section {
   id: string;
   type: SectionType;
   title?: string;
   content?: string; // For story text
-  data?: MCQData | TrueFalseData | QAData | FIBData | any;
+  data?: MCQData | TrueFalseData | QAData | FIBData | CharacterSketchData | any;
   imageUrl?: string;
   imagePrompt?: string;
   layout?: 'text-only' | 'image-top' | 'image-bottom' | 'image-left' | 'image-right' | 'background';

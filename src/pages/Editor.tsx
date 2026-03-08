@@ -5,7 +5,7 @@ import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { PDFDownloadLink, BlobProvider } from '@react-pdf/renderer';
 import { MyDocument } from '../components/PDFDocument';
-import { Save, Download, ArrowLeft, RefreshCw, Wand2, Plus, BookOpen, HelpCircle, Image as ImageIcon, CheckSquare, MessageSquare, Trash2 } from 'lucide-react';
+import { Save, Download, ArrowLeft, RefreshCw, Wand2, Plus, BookOpen, HelpCircle, Image as ImageIcon, CheckSquare, MessageSquare, Trash2, User } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 import { Section, SectionType } from '../types';
 import StoryEditor from '../components/editor/StoryEditor';
@@ -14,6 +14,7 @@ import TrueFalseEditor from '../components/editor/TrueFalseEditor';
 import QAEditor from '../components/editor/QAEditor';
 import FIBEditor from '../components/editor/FIBEditor';
 import IllustrationEditor from '../components/editor/IllustrationEditor';
+import CharacterSketchEditor from '../components/editor/CharacterSketchEditor';
 
 export default function Editor() {
   const { id } = useParams();
@@ -177,7 +178,8 @@ export default function Editor() {
       data: type === 'mcq' ? { question: '', options: [], explanation: '' } : 
             type === 'true_false' ? { statement: '', isTrue: true, explanation: '' } :
             type === 'qa' ? { question: '', answer: '' } :
-            type === 'fib' ? { question: '', answer: '', explanation: '' } : undefined
+            type === 'fib' ? { question: '', answer: '', explanation: '' } : 
+            type === 'character_sketch' ? { role: '', traits: [] } : undefined
     };
     setSections([...sections, newSection]);
   };
@@ -206,7 +208,7 @@ export default function Editor() {
         
         const prompt = `
         Analyze the following raw content and structure it into a book format.
-        Identify stories, questions, true/false, MCQs, and Fill in the Blanks.
+        Identify stories, questions, true/false, MCQs, Fill in the Blanks, and Character Sketches.
         For story sections, analyze the content to suggest a suitable layout, font style, and generate a detailed image prompt for an illustration.
         
         IMPORTANT: 
@@ -224,6 +226,7 @@ export default function Editor() {
             "font": "default" | "serif" | "sans" | "handwriting" | "mono",
             "imagePrompt": "Detailed prompt for an illustration of this scene (if layout involves image)"
           },
+          { "type": "character_sketch", "title": "Character Name", "content": "Description...", "data": { "role": "Protagonist", "traits": ["Brave", "Smart"] }, "imagePrompt": "Portrait of..." },
           { "type": "mcq", "data": { "question": "...", "options": [{"id": "1", "text": "...", "isCorrect": boolean}], "explanation": "..." } },
           { "type": "true_false", "data": { "statement": "...", "isTrue": boolean, "explanation": "..." } },
           { "type": "qa", "data": { "question": "...", "answer": "..." } },
@@ -283,7 +286,7 @@ export default function Editor() {
         
         for (let i = 0; i < newSections.length; i++) {
             const section = newSections[i];
-            if ((section.type === 'story' || section.type === 'illustration') && section.imagePrompt && !section.imageUrl) {
+            if ((section.type === 'story' || section.type === 'illustration' || section.type === 'character_sketch') && section.imagePrompt && !section.imageUrl) {
                 try {
                     const response = await ai.models.generateContent({
                         model: 'gemini-2.5-flash-image',
@@ -337,7 +340,7 @@ export default function Editor() {
           />
         </div>
         <div className="flex items-center gap-3">
-          {sections.some(s => (s.type === 'story' || s.type === 'illustration') && s.imagePrompt && !s.imageUrl) && (
+          {sections.some(s => (s.type === 'story' || s.type === 'illustration' || s.type === 'character_sketch') && s.imagePrompt && !s.imageUrl) && (
             <button
                 onClick={handleGenerateAllImages}
                 disabled={generating}
@@ -509,6 +512,13 @@ export default function Editor() {
                             onDelete={() => deleteSection(index)} 
                         />
                     )}
+                    {section.type === 'character_sketch' && (
+                        <CharacterSketchEditor 
+                            section={section} 
+                            onChange={(s) => updateSection(index, s)} 
+                            onDelete={() => deleteSection(index)} 
+                        />
+                    )}
                 </div>
             ))}
 
@@ -516,6 +526,9 @@ export default function Editor() {
             <div className="flex flex-wrap gap-2 justify-center mt-8 pt-4 border-t border-gray-200">
                 <button onClick={() => addSection('story')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                     <BookOpen className="h-4 w-4 mr-2 text-blue-500" /> Add Story
+                </button>
+                <button onClick={() => addSection('character_sketch')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                    <User className="h-4 w-4 mr-2 text-indigo-500" /> Add Character
                 </button>
                 <button onClick={() => addSection('illustration')} className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                     <ImageIcon className="h-4 w-4 mr-2 text-purple-500" /> Add Illustration
