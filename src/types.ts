@@ -33,6 +33,8 @@ export interface Section {
   data?: MCQData | TrueFalseData | QAData | any;
   imageUrl?: string;
   imagePrompt?: string;
+  layout?: 'text-only' | 'image-top' | 'image-bottom' | 'image-left' | 'image-right' | 'background';
+  font?: 'sans' | 'serif' | 'mono' | 'handwriting' | 'cursive';
 }
 
 export interface Book {

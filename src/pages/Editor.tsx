@@ -146,11 +146,19 @@ export default function Editor() {
         const prompt = `
         Analyze the following raw content and structure it into a book format.
         Identify stories, questions, true/false, and MCQs.
+        For story sections, analyze the content to suggest a suitable layout, font style, and generate a detailed image prompt for an illustration.
         Return a JSON array of sections.
         
         Schema:
         [
-          { "type": "story", "title": "...", "content": "..." },
+          { 
+            "type": "story", 
+            "title": "...", 
+            "content": "...",
+            "layout": "image-top" | "image-bottom" | "text-only",
+            "font": "serif" | "sans" | "handwriting" | "mono",
+            "imagePrompt": "Detailed prompt for an illustration of this scene (if layout involves image)"
+          },
           { "type": "mcq", "data": { "question": "...", "options": [{"id": "1", "text": "...", "isCorrect": boolean}], "explanation": "..." } },
           { "type": "true_false", "data": { "statement": "...", "isTrue": boolean, "explanation": "..." } },
           { "type": "qa", "data": { "question": "...", "answer": "..." } },
@@ -189,6 +197,45 @@ export default function Editor() {
     }
   };
 
+  const handleGenerateAllImages = async () => {
+    setGenerating(true);
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const newSections = [...sections];
+    
+    try {
+        for (let i = 0; i < newSections.length; i++) {
+            const section = newSections[i];
+            if ((section.type === 'story' || section.type === 'illustration') && section.imagePrompt && !section.imageUrl) {
+                try {
+                    const response = await ai.models.generateContent({
+                        model: 'gemini-2.5-flash-image',
+                        contents: { parts: [{ text: section.imagePrompt }] },
+                    });
+                    
+                    let imageUrl = '';
+                    if (response.candidates?.[0]?.content?.parts) {
+                        for (const part of response.candidates[0].content.parts) {
+                            if (part.inlineData) {
+                                imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (imageUrl) {
+                        newSections[i] = { ...section, imageUrl };
+                        setSections([...newSections]); // Update state progressively to show progress
+                    }
+                } catch (e) {
+                    console.error(`Error generating image for section ${i}:`, e);
+                }
+            }
+        }
+    } finally {
+        setGenerating(false);
+    }
+  };
+
   if (loading) return <div className="p-8">Loading...</div>;
 
   return (
@@ -208,6 +255,16 @@ export default function Editor() {
           />
         </div>
         <div className="flex items-center gap-3">
+          {sections.some(s => (s.type === 'story' || s.type === 'illustration') && s.imagePrompt && !s.imageUrl) && (
+            <button
+                onClick={handleGenerateAllImages}
+                disabled={generating}
+                className="hidden md:flex items-center px-3 py-2 border border-indigo-200 rounded-md text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-50"
+            >
+                {generating ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Wand2 className="h-4 w-4 mr-2" />}
+                Generate Missing Images
+            </button>
+          )}
           <button
             onClick={() => setShowPreview(!showPreview)}
             className="hidden md:flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
