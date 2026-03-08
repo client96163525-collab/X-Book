@@ -49,6 +49,50 @@ export default function StoryEditor({ section, onChange, onDelete }: SectionEdit
     }
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (limit to 2MB before compression)
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image is too large. Please choose an image under 2MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Resize if too large (max 800px width/height)
+        const MAX_SIZE = 800;
+        if (width > MAX_SIZE || height > MAX_SIZE) {
+          if (width > height) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Compress to JPEG with 0.7 quality
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        onChange({ ...section, imageUrl: dataUrl });
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm">
       <div className="flex justify-between items-center mb-4">
@@ -67,10 +111,11 @@ export default function StoryEditor({ section, onChange, onDelete }: SectionEdit
                 <option value="image-bottom">Image Bottom</option>
             </select>
             <select
-                value={section.font || 'sans'}
+                value={section.font || 'default'}
                 onChange={(e) => onChange({ ...section, font: e.target.value as any })}
                 className="text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             >
+                <option value="default">Default (Theme)</option>
                 <option value="sans">Sans Serif</option>
                 <option value="serif">Serif</option>
                 <option value="handwriting">Handwriting</option>
@@ -120,6 +165,21 @@ export default function StoryEditor({ section, onChange, onDelete }: SectionEdit
                 >
                     {generatingImage ? <Wand2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
                 </button>
+            </div>
+
+            <div className="mt-2">
+                <p className="text-xs text-gray-500 mb-1">Or upload your own image:</p>
+                <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageUpload}
+                    className="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-indigo-50 file:text-indigo-700
+                        hover:file:bg-indigo-100"
+                />
             </div>
 
             {section.imageUrl && (

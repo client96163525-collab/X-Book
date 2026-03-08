@@ -177,6 +177,14 @@ const getThemeStyles = (template: string = 'classic') => {
         coverAuthor: { fontSize: 16, marginTop: 80, textAlign: 'center', color: '#444' },
         sectionTitle: { fontSize: 28, fontFamily: 'Noto Sans Devanagari', fontWeight: 'bold', marginBottom: 20, marginTop: 20, textAlign: 'center', color: '#e11d48' },
       });
+    case 'story-book':
+      return StyleSheet.create({
+        page: { padding: 50, fontFamily: 'Noto Serif Devanagari', fontSize: 12, lineHeight: 1.6, color: '#000' },
+        coverTitle: { fontSize: 40, fontFamily: 'Noto Serif Devanagari', fontWeight: 'bold', marginBottom: 20, textAlign: 'center', textTransform: 'uppercase' },
+        coverSubtitle: { fontSize: 18, marginBottom: 40, textAlign: 'center', color: '#444', fontStyle: 'italic' },
+        coverAuthor: { fontSize: 14, marginTop: 100, textAlign: 'center', fontStyle: 'italic' },
+        sectionTitle: { fontSize: 24, fontFamily: 'Noto Serif Devanagari', fontWeight: 'bold', marginBottom: 20, marginTop: 40, textAlign: 'center' },
+      });
     default: // classic
       return StyleSheet.create({
         page: { padding: 50, fontFamily: 'Noto Sans Devanagari', fontSize: 12, lineHeight: 1.5 },
@@ -218,13 +226,18 @@ export const MyDocument = ({ title, subtitle, author, sections, template }: PDFD
     {/* Content Pages */}
     <Page size="A4" style={[styles.page, themeStyles.page]}>
       {sections.map((section, index) => {
-        const fontFamily = section.font === 'serif' ? 'Noto Serif Devanagari' :
+        // Determine font family: use section specific if set, otherwise inherit from theme (undefined)
+        let fontFamily = undefined;
+        if (section.font && section.font !== 'default') {
+             fontFamily = section.font === 'serif' ? 'Noto Serif Devanagari' :
                            section.font === 'handwriting' ? 'Kalam' :
                            section.font === 'cursive' ? 'Kalam' :
-                           section.font === 'mono' ? 'Courier' :
+                           section.font === 'mono' ? 'Teko' : // Using Teko for mono/display-like or fallback to Courier if needed, but let's stick to registered fonts
                            'Noto Sans Devanagari';
+             if (section.font === 'mono') fontFamily = 'Courier'; // Standard Courier for mono
+        }
         
-        const contentStyle = [styles.paragraph, { fontFamily }];
+        const contentStyle = [styles.paragraph, fontFamily ? { fontFamily } : {}];
 
         return (
         <View key={section.id} break={index > 0 && section.type === 'story'}> 

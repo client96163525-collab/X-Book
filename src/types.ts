@@ -34,7 +34,7 @@ export interface Section {
   imageUrl?: string;
   imagePrompt?: string;
   layout?: 'text-only' | 'image-top' | 'image-bottom' | 'image-left' | 'image-right' | 'background';
-  font?: 'sans' | 'serif' | 'mono' | 'handwriting' | 'cursive';
+  font?: 'sans' | 'serif' | 'mono' | 'handwriting' | 'cursive' | 'default';
 }
 
 export interface Book {
@@ -43,7 +43,7 @@ export interface Book {
   title: string;
   subtitle?: string;
   author?: string;
-  template: 'classic' | 'children' | 'workbook' | 'minimal' | 'modern';
+  template: 'classic' | 'children' | 'workbook' | 'minimal' | 'modern' | 'story-book';
   sections: Section[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
